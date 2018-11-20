@@ -1,0 +1,6 @@
+[package]
+name = "MerkleTree"
+version = "0.1.0"
+authors = ["Kévin NAUDIN <naudin.kevin@outlook.fr>"]
+
+[dependencies]
