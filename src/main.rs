@@ -1,3 +1,7 @@
+mod data;
+use data::*;
+
 fn main() {
-    println!("Merkle Tree");
+    let num_data = Data::new(5);
+    println!("Numeric data contains {}", num_data.get_value());
 }
