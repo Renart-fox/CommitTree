@@ -1,4 +1,14 @@
 [[package]]
 name = "MerkleTree"
 version = "0.1.0"
+dependencies = [
+ "md5 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
+[[package]]
+name = "md5"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[metadata]
+"checksum md5 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "2cfd7095f695c117f89db0a838710180bc22f1867e2454a5c810a538baee55f9"

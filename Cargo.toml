@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["Kévin NAUDIN <naudin.kevin@outlook.fr>"]
 
 [dependencies]
+md5 = "0.6.0"
