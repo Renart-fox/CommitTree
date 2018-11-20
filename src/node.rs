@@ -3,7 +3,7 @@ use std::io::Write;
 use std::io::stdout;
 
 pub struct Node{
-    data : Data<DataType>,
+    data : Data,
     hash : Option<String>,
     is_head : bool,
     is_leaf : bool,
@@ -11,7 +11,7 @@ pub struct Node{
 }
 
 impl Node{
-    pub fn new(node_data : Data<DataType>) -> Node {
+    pub fn new(node_data : Data) -> Node {
         Node{
             data : node_data,
             hash : None,
@@ -33,7 +33,7 @@ impl Node{
         added_node
     }
 
-    pub fn get_data(&self) -> &Data<DataType>{
+    pub fn get_data(&self) -> &Data{
         &self.data
     }
 

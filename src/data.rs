@@ -7,13 +7,13 @@ pub enum DataType{
 }
 
 // A data is composed of a single value
-pub struct Data<T> {
+pub struct Data{
     name : String,
-    value : T
+    value : DataType
 }
 
-impl<T> Data<T>{
-    pub fn new(data_name : String, data_value : T) -> Data<T> {
+impl Data{
+    pub fn new(data_name : String, data_value : DataType) -> Data {
         Data{name: data_name, value: data_value}
     }
 
@@ -21,11 +21,11 @@ impl<T> Data<T>{
         &self.name
     }
 
-    pub fn get_value(&self) -> &T {
+    pub fn get_value(&self) -> &DataType {
         &self.value
     }
 
-    pub fn set_value(&mut self, data_value : T) {
+    pub fn set_value(&mut self, data_value : DataType) {
         self.value = data_value;
     }
 }
