@@ -33,6 +33,7 @@ impl Node{
 
         if self.children.len() < 2 as usize {
             self.children.push(node);
+            self.compute_hash();
         }
         else {
             added_node = false;
@@ -94,6 +95,7 @@ impl Node{
                     DataType::Float(f) => value.push_str(&*f.to_string())
             }
         }
+        self.hash.take();
         self.hash.get_or_insert(format!("{:x}", md5::compute(value)));
     }
 }
