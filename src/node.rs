@@ -10,16 +10,18 @@ pub struct Node{
     hash : Option<String>,
     is_head : bool,
     is_leaf : bool,
+    message : String,
     children : Vec<Rc<RefCell<Node>>>
 }
 
 impl Node{
-    pub fn new(node_data : Data) -> Rc<RefCell<Node>> {
+    pub fn new(node_data : Data, commit_message : String) -> Rc<RefCell<Node>> {
         let node = Rc::new(RefCell::new(Node{
             data : node_data,
             hash : None,
             is_head : false,
             is_leaf : false,
+            message : commit_message,
             children : Vec::new()
         }));
         node.borrow_mut().compute_hash();
@@ -42,7 +44,16 @@ impl Node{
         &self.data
     }
 
+    pub fn get_message(&self) -> &String{
+        &self.message
+    }
+
+    pub fn set_message(&mut self, new_message : String){
+        self.message = new_message;
+    }
+
     pub fn print_all_data(&self){
+        println!("Commit '{}'", &self.message);
         print!("Data name: '{}' Held information -> ", self.data.get_name());
         match self.data.get_value() {
             DataType::String(v) => print!("{}", v),
