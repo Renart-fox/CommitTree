@@ -19,46 +19,57 @@ The following code
 let first_node = Node::new(Data::new(String::from("My age"), DataType::Integer(21)), String::from("Added my age."));
 let second_node = Node::new(Data::new(String::from("A float"), DataType::Float(3.14)), String::from("Defined PI."));
 let third_node = Node::new(Data::new(String::from("This is a"), DataType::String(String::from("Working tree."))), String::from("Commented line"));
-let mut fourth_node = Node::new(Data::new(String::from("Random number"), DataType::Integer(21)), String::from("New branch!"));
+let fourth_node = Node::new(Data::new(String::from("Random number"), DataType::Integer(21)), String::from("New branch!"));
 
 // Create the tree with the first node as the 'master' head
 let mut merkle_tree = Tree::new(first_node);
 merkle_tree.push(second_node, String::from("master"));
 merkle_tree.push(third_node, String::from("master")); // At this point, the third node is the 'master' head
 
-// See [1]
-merkle_tree.print_all_data(String::from("master"));
-
-// Error because the dev branch doesn't exist [2]
+// Error because the dev branch doesn't exist [1]
 let error = merkle_tree.push(fourth_node.clone(), String::from("dev"));
 println!("{}", error);
 
 // Last used branch was 'master' so the 'dev' branch will be set from the 'master' branch
 merkle_tree.new_branch(fourth_node, String::from("dev"));
 
-//See [3]
+// Display the 'dev' branch [2]
+merkle_tree.print_all_data(String::from("dev"));
+
+// Any commit with this hash will be removed.
+// All parent commits will recompute their hash !
+merkle_tree.remove(String::from("3c59dc048e8850243be8079a5c74d079"));
+
+// Note that the hash are different
+// Note that more than 1 commit can be a head [3]
+merkle_tree.print_all_data(String::from("master"));
 merkle_tree.print_all_data(String::from("dev"));
 ```
 Will output:
 ```
 [1]
-Branch master
-Commit 'Commented line'
-Data name: 'This is a' Held information -> Working tree. hash: 7b74fc6204d5ef422b8b8ee10e5d64a8
-Commit 'Defined PI.'
-Data name: 'A float' Held information -> 3.14 hash: e39a411b54c3ce46fd382fef7f632157
-Commit 'Added my age.'
-Data name: 'My age' Held information -> 21 hash: 3c59dc048e8850243be8079a5c74d079
-[2]
 [error] branch does not exist
-[3]
+[2]
 Branch dev
-Commit 'New branch!'
-Data name: 'Random number' Held information -> 21 hash: 1bd4a7d8d8f1686b3d1866376f9e8cd0
-Commit 'Commented line'
-Data name: 'This is a' Held information -> Working tree. hash: 7b74fc6204d5ef422b8b8ee10e5d64a8
-Commit 'Defined PI.'
-Data name: 'A float' Held information -> 3.14 hash: e39a411b54c3ce46fd382fef7f632157
-Commit 'Added my age.'
-Data name: 'My age' Held information -> 21 hash: 3c59dc048e8850243be8079a5c74d079
+|-[HEAD] Commit 'New branch!'
+|-- Data name: 'Random number' Held information -> 21 hash: 1bd4a7d8d8f1686b3d1866376f9e8cd0
+|-[HEAD] Commit 'Commented line'
+|-- Data name: 'This is a' Held information -> Working tree. hash: 7b74fc6204d5ef422b8b8ee10e5d64a8
+|-Commit 'Defined PI.'
+|-- Data name: 'A float' Held information -> 3.14 hash: e39a411b54c3ce46fd382fef7f632157
+|-[LEAF] Commit 'Added my age.'
+|-- Data name: 'My age' Held information -> 21 hash: 3c59dc048e8850243be8079a5c74d079
+[3]
+Branch master
+|-[HEAD] Commit 'Commented line'
+|-- Data name: 'This is a' Held information -> Working tree. hash: fe7aeb30a11099c06aa2c0b386e84006
+|-[LEAF] Commit 'Defined PI.'
+|-- Data name: 'A float' Held information -> 3.14 hash: 4beed3b9c4a886067de0e3a094246f78
+Branch dev
+|-[HEAD] Commit 'New branch!'
+|-- Data name: 'Random number' Held information -> 21 hash: 4841d37ababc9c2455b1a60d511a42ea
+|-[HEAD] Commit 'Commented line'
+|-- Data name: 'This is a' Held information -> Working tree. hash: fe7aeb30a11099c06aa2c0b386e84006
+|-[LEAF] Commit 'Defined PI.'
+|-- Data name: 'A float' Held information -> 3.14 hash: 4beed3b9c4a886067de0e3a094246f78
 ```
