@@ -24,8 +24,10 @@ impl Tree{
 
     pub fn push(&mut self, node : Rc<RefCell<Node>>, branch : String) -> String{
         if let Some(branch_head) = self.branches.clone().get(&branch){
+            branch_head.borrow_mut().set_head(false);
             node.borrow_mut().add_child(branch_head.clone());
             node.borrow_mut().compute_hash();
+            node.borrow_mut().set_head(true);
             self.branches.insert("master".to_string(), node);
             self.last_working_branch = branch;
             self.size += 1;
@@ -36,6 +38,31 @@ impl Tree{
         }
     }
 
+    // Returns if the deletion was successful
+    pub fn remove(&mut self, hash : String) -> bool{
+        let mut result = false;
+        for (branch_name, head) in self.branches.clone(){
+            if !result{
+                result = head.borrow_mut().remove(hash.clone());
+            }
+            if !result{ // Hash was not among children, maybe it's the head itself
+                if head.borrow_mut().get_hash() == hash.clone(){
+                    if head.borrow_mut().is_leaf(){
+                        drop(head);
+                        self.branches.remove_entry(&branch_name);
+                    }
+                    else if head.borrow_mut().get_children().len() == 1{
+                        let mut child = head.borrow_mut().get_children()[0].clone();
+                        child.borrow_mut().set_head(true);
+                        self.branches.insert(branch_name.clone(), child);
+                        drop(head);
+                    } // Don't remove if children equals 2, you can't delete merge commits
+                }
+            }
+        }
+        result
+    }
+
     pub fn new_branch(&mut self, node : Rc<RefCell<Node>>, branch : String) -> String{
         if self.branches.clone().contains_key(&branch){
             "[error] branch with the same name already exist".to_string()
@@ -43,6 +70,7 @@ impl Tree{
         else {
             if let Some(branch_head) = self.branches.clone().get(&self.last_working_branch){
                 node.borrow_mut().add_child(branch_head.clone());
+                node.borrow_mut().set_head(true);
             }
             self.branches.insert(branch.clone(), node);
             self.last_working_branch = branch;
