@@ -13,6 +13,7 @@ pub struct Tree{
 impl Tree{
     pub fn new(tree_head : Rc<RefCell<Node>>) -> Tree{
         tree_head.borrow_mut().set_head(true);
+        tree_head.borrow_mut().set_owner("master".to_string());
         let mut tree = Tree{
             branches : HashMap::new(),
             last_working_branch : "master".to_string(),
@@ -28,6 +29,7 @@ impl Tree{
             node.borrow_mut().add_child(branch_head.clone());
             node.borrow_mut().compute_hash();
             node.borrow_mut().set_head(true);
+            node.borrow_mut().set_owner(branch.clone());
             self.branches.insert("master".to_string(), node);
             self.last_working_branch = branch;
             self.size += 1;

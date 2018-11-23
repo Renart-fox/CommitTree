@@ -12,7 +12,8 @@ pub struct Node{
     is_head : bool,
     is_leaf : bool,
     message : String,
-    children : Vec<Rc<RefCell<Node>>>
+    children : Vec<Rc<RefCell<Node>>>,
+    owner: String
 }
 
 impl Node{
@@ -23,7 +24,8 @@ impl Node{
             is_head : false,
             is_leaf : true,
             message : commit_message,
-            children : Vec::new()
+            children : Vec::new(),
+            owner : "None".to_string()
         }));
         node.borrow_mut().compute_hash();
         node
@@ -41,6 +43,14 @@ impl Node{
             added_node = false;
         }
         added_node
+    }
+
+    pub fn set_owner(&mut self, branch: String){
+        self.owner = branch;
+    }
+
+    pub fn get_owner(&self) -> &String{
+        &self.owner
     }
 
     pub fn get_data(&self) -> &Data{
@@ -93,7 +103,7 @@ impl Node{
     }
 
     pub fn compute_hash(&mut self){
-        let mut value = String::new();
+        let mut value = self.owner.clone();
         // If we have children, we build our hash according to their hash
         if self.children.len() > 0{
             self.children.iter().for_each(|child|
