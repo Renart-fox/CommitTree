@@ -71,7 +71,10 @@ impl Tree{
         }
         else {
             if let Some(branch_head) = self.branches.clone().get(&self.last_working_branch){
-                node.borrow_mut().add_child(branch_head.clone());
+                let mut head_clone = branch_head.borrow_mut().clone();
+                head_clone.change_owner(branch.clone());
+                let ref_to_clone = Rc::new(RefCell::new(head_clone));
+                node.borrow_mut().add_child(ref_to_clone);
                 node.borrow_mut().set_head(true);
             }
             self.branches.insert(branch.clone(), node);

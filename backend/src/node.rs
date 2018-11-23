@@ -6,6 +6,7 @@ use std::rc::Rc;
 use self::md5::*;
 use std::mem::drop;
 
+#[derive(Clone)]
 pub struct Node{
     data : Data,
     hash : Option<String>,
@@ -162,5 +163,20 @@ impl Node{
             self.compute_hash();
         }
         result
+    }
+
+    pub fn change_owner(&mut self, new_owner: String){
+        self.set_owner(new_owner.clone());
+        self.set_head(false);
+        let mut child_number = 0;
+        for child in self.children.clone(){
+            let mut child_clone = child.borrow_mut().clone();
+            child_clone.change_owner(new_owner.clone());
+            self.children.remove(child_number);
+            let mut ref_to_clone = Rc::new(RefCell::new(child_clone));
+            self.children.insert(child_number, ref_to_clone);
+            child_number += 1;
+        }
+        self.compute_hash();
     }
 }

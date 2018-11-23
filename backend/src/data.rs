@@ -1,5 +1,5 @@
 // Defines the data contained in a node
-
+#[derive(Clone)]
 pub enum DataType{
     String(String),
     Float(f64),
@@ -7,6 +7,7 @@ pub enum DataType{
 }
 
 // A data is composed of a single value
+#[derive(Clone)]
 pub struct Data{
     name : String,
     value : DataType
