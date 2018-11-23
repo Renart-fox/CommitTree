@@ -53,19 +53,21 @@ Will output:
 [2]
 Branch dev
 |-[HEAD] Commit 'New branch!'
-|-- Data name: 'Random number' Held information -> 21 hash: 1bd4a7d8d8f1686b3d1866376f9e8cd0
-|-[HEAD] Commit 'Commented line'
-|-- Data name: 'This is a' Held information -> Working tree. hash: 7b74fc6204d5ef422b8b8ee10e5d64a8
+|-- Data name: 'Random number' Held information -> 21 hash: c9db9322d5885099119e7f35f6166c25
+|-Commit 'Commented line'
+|-- Data name: 'This is a' Held information -> Working tree. hash: 5864ecaeb40a56fe627fc36da2945b7b
 |-Commit 'Defined PI.'
-|-- Data name: 'A float' Held information -> 3.14 hash: e39a411b54c3ce46fd382fef7f632157
+|-- Data name: 'A float' Held information -> 3.14 hash: 84d415275baf9261771b8f12d3f4617f
 |-[LEAF] Commit 'Added my age.'
-|-- Data name: 'My age' Held information -> 21 hash: 3c59dc048e8850243be8079a5c74d079
+|-- Data name: 'My age' Held information -> 21 hash: 6727efa2c4e2e02eae4410a0ab82156f
 [3]
 Branch master
 |-[HEAD] Commit 'Commented line'
-|-- Data name: 'This is a' Held information -> Working tree. hash: fe7aeb30a11099c06aa2c0b386e84006
-|-[LEAF] Commit 'Defined PI.'
-|-- Data name: 'A float' Held information -> 3.14 hash: 4beed3b9c4a886067de0e3a094246f78
+|-- Data name: 'This is a' Held information -> Working tree. hash: 6f2f27ec205a1fb26a3fe0574a20e261
+|-Commit 'Defined PI.'
+|-- Data name: 'A float' Held information -> 3.14 hash: cf670ae90f73a914cdb447627421af2b
+|-[LEAF] Commit 'Added my age.'
+|-- Data name: 'My age' Held information -> 21 hash: 03f8faa47a2e9614453e50aaf8d7f278
 Branch dev
 |-[HEAD] Commit 'New branch!'
 |-- Data name: 'Random number' Held information -> 21 hash: c9db9322d5885099119e7f35f6166c25
