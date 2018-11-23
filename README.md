@@ -40,8 +40,9 @@ merkle_tree.print_all_data(String::from("dev"));
 // All parent commits will recompute their hash !
 merkle_tree.remove(String::from("3c59dc048e8850243be8079a5c74d079"));
 
-// Note that the hash are different
-// Note that more than 1 commit can be a head [3]
+// Since commits are branch dependents, the removed commit from master is not
+// removed from the 'dev' branch. Note how all the hashes haved changed!
+// You can see that our tree now has 2 heads! [3]
 merkle_tree.print_all_data(String::from("master"));
 merkle_tree.print_all_data(String::from("dev"));
 ```
@@ -67,9 +68,11 @@ Branch master
 |-- Data name: 'A float' Held information -> 3.14 hash: 4beed3b9c4a886067de0e3a094246f78
 Branch dev
 |-[HEAD] Commit 'New branch!'
-|-- Data name: 'Random number' Held information -> 21 hash: 4841d37ababc9c2455b1a60d511a42ea
-|-[HEAD] Commit 'Commented line'
-|-- Data name: 'This is a' Held information -> Working tree. hash: fe7aeb30a11099c06aa2c0b386e84006
-|-[LEAF] Commit 'Defined PI.'
-|-- Data name: 'A float' Held information -> 3.14 hash: 4beed3b9c4a886067de0e3a094246f78
+|-- Data name: 'Random number' Held information -> 21 hash: c9db9322d5885099119e7f35f6166c25
+|-Commit 'Commented line'
+|-- Data name: 'This is a' Held information -> Working tree. hash: 5864ecaeb40a56fe627fc36da2945b7b
+|-Commit 'Defined PI.'
+|-- Data name: 'A float' Held information -> 3.14 hash: 84d415275baf9261771b8f12d3f4617f
+|-[LEAF] Commit 'Added my age.'
+|-- Data name: 'My age' Held information -> 21 hash: 6727efa2c4e2e02eae4410a0ab82156f
 ```
