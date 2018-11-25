@@ -6,6 +6,7 @@ use std::collections::HashMap;
 
 pub struct Tree{
     branches : HashMap<String, Rc<RefCell<Node>>>,
+    parallel_branches : HashMap<String, String>,
     last_working_branch : String,
     size : u32
 }
@@ -16,6 +17,7 @@ impl Tree{
         tree_head.borrow_mut().set_owner("master".to_string());
         let mut tree = Tree{
             branches : HashMap::new(),
+            parallel_branches : HashMap::new(),
             last_working_branch : "master".to_string(),
             size : 1
         };
@@ -78,9 +80,23 @@ impl Tree{
                 node.borrow_mut().change_owner(branch.clone());
             }
             self.branches.insert(branch.clone(), node);
+            self.parallel_branches.insert(branch.clone(), self.last_working_branch.clone());
             self.last_working_branch = branch;
             self.size += 1;
             "branch created".to_string()
+        }
+    }
+
+    pub fn display_branches(&self){
+        println!("Displaying all branches.");
+        for (branch, branch_head) in self.branches.clone(){
+            let mut current_branch = branch.clone();
+            print!("{}", current_branch.clone());
+            while self.parallel_branches.clone().contains_key(&current_branch.clone()) {
+                current_branch = self.parallel_branches.clone()[&current_branch].clone();
+                print!(" -> from {}", current_branch);
+            }
+            println!();
         }
     }
 
