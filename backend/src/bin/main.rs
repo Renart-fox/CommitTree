@@ -9,7 +9,7 @@ use std::net::TcpListener;
 use std::net::TcpStream;
 use std::fs::File;
 use std::thread;
-use std::time::Duration;
+use std::collections::HashMap;
 use structs::data::*;
 use structs::node::*;
 use structs::tree::*;
@@ -58,7 +58,7 @@ fn main() {
     let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
     let pool = ThreadPool::new(4);
 
-    for stream in listener.incoming().take(2) {
+    for stream in listener.incoming() {
         let stream = stream.unwrap();
 
         pool.execute(|| {
@@ -73,25 +73,56 @@ fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 512];
     stream.read(&mut buffer).unwrap();
 
+    // GET requests
     let get = b"GET / HTTP/1.1\r\n";
-    let sleep = b"GET /sleep HTTP/1.1\r\n";
 
+    // POST requests
+    let add_node = b"POST /add_node HTTP/1.1\r\n";
+    let get_all_nodes = b"POST /get_all_nodes HTTP/1.1\r\n";
+
+    // This deals with GET requests but we don't use them
     let (status_line, filename) = if buffer.starts_with(get) {
         ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
-    } else if buffer.starts_with(sleep) {
-        thread::sleep(Duration::from_secs(5));
-        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
-    } else {
+    }else {
         ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
     };
 
-     let mut file = File::open(filename).unwrap();
-     let mut contents = String::new();
+    // If we're dealing with post requests, this will recover the data
+    // Else it will recover some HTTP data we don't care about
+    let request_content = String::from_utf8_lossy(&buffer[..]);
+    let mut request_split = request_content.split("\r\n").collect::<Vec<_>>();
+    let mut post_data = request_split[request_split.len()-1];
+    // Now we can deal with post requests
+    let (status_line, serialized_answer) = if buffer.starts_with(add_node) {
+        // This needs a branch name, a data, the data name and a commit message to work
 
-     file.read_to_string(&mut contents).unwrap();
+        ("HTTP/1.1 200 OK\r\n\r\n", "Trust me this is a serialized JSON bro\n")
+    }else if buffer.starts_with(get_all_nodes){
+        ("HTTP/1.1 200 OK\r\n\r\n", "Displaying all nodes\n")
+    }else {
+        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
+    };
 
-     let response = format!("{}{}", status_line, contents);
+    let mut contents = String::new();
 
-     stream.write(response.as_bytes()).unwrap();
-     stream.flush().unwrap();
+    if buffer.starts_with(get) {
+        let mut file = File::open(filename).unwrap();
+
+        file.read_to_string(&mut contents).unwrap();
+    }
+    else{
+        contents = serialized_answer.to_string();
+    }
+
+    let response = format!("{}{}", status_line, contents);
+
+    stream.write(response.as_bytes()).unwrap();
+    stream.flush().unwrap();
+}
+
+fn parse_data(raw_data: String) -> HashMap<String, String>{
+    let mut data = HashMap::new();
+    /* Regex to find parameters in the data
+     /([a-zA-Z0-9]+=(.)+?)(?=\&[a-zA-Z0-9]+=)/g
+    */
 }
