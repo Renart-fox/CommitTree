@@ -1,10 +1,8 @@
-mod node;
-mod data;
-mod tree;
+mod structs;
 
-use data::*;
-use node::*;
-use tree::*;
+use structs::data::*;
+use structs::node::*;
+use structs::tree::*;
 
 fn main() {
     // Creating 4 nodes
